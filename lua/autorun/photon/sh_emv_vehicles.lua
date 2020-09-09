@@ -234,12 +234,12 @@ function EMVU:PreloadVehicle(key, car)
 	if car.EMV.Presets and istable( car.EMV.Presets ) then
 		EMVU.PresetIndex[key] = car.EMV.Presets
 	else
-		EMVU.LoadPresetDefault( car.Name, car.EMV )
+		EMVU.LoadPresetDefault( key, car.EMV )
 	end
 
 	if car.EMV.Auto and istable( car.EMV.Auto ) then
 		EMVU.AutoIndex[key] = car.EMV.Auto
-		EMVU:CalculateAuto( car.Name, car.EMV.Auto )
+		EMVU:CalculateAuto( key, car.EMV.Auto )
 	end
 
 	if car.EMV.SubMaterials and istable( car.EMV.SubMaterials ) then
