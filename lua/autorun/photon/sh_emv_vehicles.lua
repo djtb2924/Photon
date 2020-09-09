@@ -164,7 +164,7 @@ end
 
 function EMVU:PreloadVehicle(key, car)
 	if EMVU.Positions[key] then return end
-	EMVU:OverwriteIndex(key, car.EMV or {}) return end
+	EMVU:OverwriteIndex(key, car.EMV or {})
 
 	if istable(car.EMV.Sequences) then
 		EMVU.LoadModeData(key, car.EMV.Sequences)
@@ -249,7 +249,6 @@ function EMVU:PreloadVehicle(key, car)
 	if car.EMV.Selections and istable( car.EMV.Selections ) then
 		EMVU.Selections[key] = car.EMV.Selections
 	end
-
 end
 
 local function safeTableEmpty( tab )
