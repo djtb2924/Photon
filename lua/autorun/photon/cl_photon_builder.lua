@@ -366,6 +366,7 @@ local PHOTON_CREATOR_TEMPLATE = [[
 AddCSLuaFile()
 
 local VehicleName = "%PREF_NAME"
+local VehicleIndex = "%PREF_INDEX"
 
 local EMV = {}
 
@@ -402,9 +403,9 @@ local V = {
 	HasPhoton = true,
 	Photon = "PHOTON_INHERIT"
 }
-list.Set( "Vehicles", "%PREF_INDEX", V )
+list.Set( "Vehicles", VehicleIndex, V )
 
-if EMVU then EMVU:OverwriteIndex( VehicleName, EMV ) end
+if EMVU then EMVU:OverwriteIndex( VehicleIndex, EMV ) end
 ]]
 
 local function PhotonTemplateReplace( text, inject )
