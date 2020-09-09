@@ -141,14 +141,16 @@ end
 
 function EMVU:LoadVehicles()
 	local cars = list.GetForEdit("Vehicles")
-	for k,v in pairs(cars) do
+	for k, v in pairs(cars) do
 		if v.IsEMV then
-			if istable( v.EMV ) then EMVU:PreloadVehicle( v ) end
+			if istable(v.EMV) then
+				EMVU:PreloadVehicle(k, v)
+			end
 		elseif EMVU:CheckForELS( v.Model ) then
 			v.IsEMV = true
 			v.EMV = EMVU:CheckForELS( v.Model )
 			list.Set( "Vehicles", k, v )
-			EMVU:PreloadVehicle( v )
+			EMVU:PreloadVehicle(k, v)
 		end
 	end
 end
@@ -157,89 +159,92 @@ function EMVU:CheckForELS( model )
 	if Photon.GetEMVIndex( model ) then return Photon.EMVLibrary[ Photon.GetEMVIndex(model) ] else return false end
 end
 
-function EMVU:PreloadVehicle( car )
-	if EMVU.Positions[ car.Name ] then return end
-	if car.Name then EMVU:OverwriteIndex( tostring( car.Name ), car.EMV or {} ) return end
-	if istable( car.EMV.Sequences ) then EMVU.LoadModeData( car.Name, car.EMV.Sequences ) end
+function EMVU:PreloadVehicle(key, car)
+	if EMVU.Positions[key] then return end
+	EMVU:OverwriteIndex(key, car.EMV or {}) return end
 
-	EMVU.Index[ #EMVU.Index + 1 ] = car.Name
+	if istable(car.EMV.Sequences) then
+		EMVU.LoadModeData(key, car.EMV.Sequences)
+	end
+
+	EMVU.Index[#EMVU.Index + 1] = key
 
 	if CLIENT then
-		if istable( car.EMV.Positions ) then
-			EMVU.Positions[ car.Name ] = car.EMV.Positions
+		if istable(car.EMV.Positions) then
+			EMVU.Positions[key] = car.EMV.Positions
 		elseif isstring(car.EMV.Positions) then
-			EMVU.Positions[ car.Name ] = EMVU.Positions[car.EMV.Positions]
+			EMVU.Positions[key] = EMVU.Positions[car.EMV.Positions]
 		else
-			EMVU.Positions[ car.Name ] = {}
+			EMVU.Positions[key] = {}
 		end
 	end
 
 	if CLIENT then
 		if istable( car.EMV.Meta ) then
-			EMVU.LightMeta[ car.Name ] = car.EMV.Meta
+			EMVU.LightMeta[key] = car.EMV.Meta
 		elseif isstring(car.EMV.Meta) then
-			EMVU.LightMeta[ car.Name ] = EMVU.LightMeta[car.EMV.Meta]
+			EMVU.LightMeta[key] = EMVU.LightMeta[car.EMV.Meta]
 		else
-			EMVU.LightMeta[ car.Name ] = {}
+			EMVU.LightMeta[key] = {}
 		end
 	end
 
 	if istable( car.EMV.Patterns ) then
-		EMVU.Patterns[ car.Name ] = car.EMV.Patterns
+		EMVU.Patterns[key] = car.EMV.Patterns
 	elseif isstring(car.EMV.Patterns) then
-		EMVU.Patterns[ car.Name ] = EMVU.Patterns[car.EMV.Patterns]
+		EMVU.Patterns[key] = EMVU.Patterns[car.EMV.Patterns]
 	else
-		EMVU.Patterns[ car.Name ] = {}
+		EMVU.Patterns[key] = {}
 	end
 
 	if istable( car.EMV.Sections ) then
-		EMVU.Sections[ car.Name ] = car.EMV.Sections
+		EMVU.Sections[key] = car.EMV.Sections
 	elseif isstring(car.EMV.Sections) then
-		EMVU.Sections[ car.Name ] = EMVU.Sections[car.EMV.Sections]
+		EMVU.Sections[key] = EMVU.Sections[car.EMV.Sections]
 	else
-		EMVU.Sections[ car.Name ] = {}
+		EMVU.Sections[key] = {}
 	end
 
 	if car.EMV.Props and istable( car.EMV.Props ) then
-		EMVU.Props[ car.Name ] = car.EMV.Props
+		EMVU.Props[key] = car.EMV.Props
 		for _,prop in pairs( car.EMV.Props ) do
 			util.PrecacheModel( prop.Model )
 		end
 	elseif isstring(car.EMV.Props) then
-		EMVU.Props[ car.Name ] = EMVU.Props[car.EMV.Props]
+		EMVU.Props[key] = EMVU.Props[car.EMV.Props]
 	else
-		EMVU.Props[ car.Name ] = {}
+		EMVU.Props[key] = {}
 	end
 
 	if car.EMV.Lamps and istable( car.EMV.Lamps ) then
-		EMVU.Lamps[ car.Name ] = car.EMV.Lamps
+		EMVU.Lamps[key] = car.EMV.Lamps
 	elseif isstring(car.EMV.Lamps) then
-		EMVU.Lamps[ car.Name ] = EMVU.Lamps[car.EMV.Lamps]
+		EMVU.Lamps[key] = EMVU.Lamps[car.EMV.Lamps]
 	end
 
 	if car.EMV.Liveries and istable( car.EMV.Liveries ) then
-		EMVU.Liveries[ car.Name ] = car.EMV.Liveries
+		EMVU.Liveries[key] = car.EMV.Liveries
 	elseif isstring( car.EMV.Liveries ) then
-		EMVU.Liveries[ car.Name ] = EMVU.Liveries[ car.EMV.Liveries ]
+		EMVU.Liveries[key] = EMVU.Liveries[ car.EMV.Liveries ]
 	end
 
 	if car.EMV.Presets and istable( car.EMV.Presets ) then
-		EMVU.PresetIndex[ car.Name ] = car.EMV.Presets
+		EMVU.PresetIndex[key] = car.EMV.Presets
 	else
 		EMVU.LoadPresetDefault( car.Name, car.EMV )
 	end
 
 	if car.EMV.Auto and istable( car.EMV.Auto ) then
-		EMVU.AutoIndex[ car.Name ] = car.EMV.Auto
+		EMVU.AutoIndex[key] = car.EMV.Auto
 		EMVU:CalculateAuto( car.Name, car.EMV.Auto )
 	end
 
 	if car.EMV.SubMaterials and istable( car.EMV.SubMaterials ) then
-		EMVU.SubMaterials[ car.Name ] = car.EMV.SubMaterials
+		EMVU.SubMaterials[key] = car.EMV.SubMaterials
 	end
 
 	if car.EMV.Selections and istable( car.EMV.Selections ) then
-		EMVU.Selections[ car.Name ] = car.EMV.Selections
+		EMVU.Selections[key] = car.EMV.Selections
 	end
 
 end
