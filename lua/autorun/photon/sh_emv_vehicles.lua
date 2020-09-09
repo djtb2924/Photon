@@ -41,25 +41,63 @@ function EMVU:PlayerSpawnedVehicle( ply, ent ) -- deprecated function, only give
 end
 
 function EMVU:SpawnedVehicle( ent )
-	if not IsValid( ent ) then print( "[Photon] Tried to setup an invalid entity: " .. tostring(ent) ) end
-	local name = ent.VehicleTable.Name
-	ent.Name = name
-	local raw = list.Get("Vehicles")[name]
-	local car = false
+	if not IsValid( ent ) then
+		print( "[Photon] Tried to setup an invalid entity: " .. tostring(ent) )
+		return
+	end
 
-	for _,scar in pairs(list.Get("Vehicles")) do
-		if scar.Name == name then
-			car = scar
-			break
+
+	-- This is default in sandbox.
+	-- It's available shared.
+	-- Automatically networked.
+	-- If your car dealer or w/e doesn't use it?
+	-- Shit breaking is your fault.
+	local name = ent:GetVehicleClass()
+	local vehicles = list.Get("Vehicles")
+
+	if not name or not vehicles[name] then
+		-- The vehicle class isn't listed in the vehicles table.
+		-- How the fuck that happened is anyone's guess.
+		-- VehicleName is set in sandbox, but has no function, so it might be overwritten.
+		-- We'll try it.
+		name = ent.VehicleName
+	end
+
+	local found = true
+	if (not name or not vehicles[name]) and ent.VehicleTable then
+		-- Now, that's not available either.
+		-- Fall back to the menu name.
+		-- This isn't ideal, but it's workable.
+		-- We do have to scan the entire vehicle table every time though.
+		-- Bad Optimisation.
+		-- SAD.
+		name = ent.VehicleTable.Name
+		found = false
+
+		for id, car in pairs(vehicles) do
+			if car.Name == name then
+				name = id
+				found = true
+				break
+			end
 		end
 	end
 
-	if not car then return end
-	if not raw or not istable( raw.EMV ) then raw = car end
-
-	if istable( car.EMV ) then
-		EMVU:MakeEMV( ent, raw.EMV )
+	if not found or not name and not vehicles[name] then
+		-- If we ever get here.
+		-- Someone did something FUCKING stupid.
+		print("[Photon] Vehicle lacked a GetVehicleClass() entry, .VehicleName field and could not be looked up from .VehicleTable.Name entry.")
+		return
 	end
+
+	-- Set the name on the entity and fetch the raw vehicle data.
+	-- Because we use the same var, we shouldn't need to rewrite the internals.
+	ent.Name = name
+	local raw = vehicles[name]
+
+	if not raw then return end
+	if not istable(raw.EMV) then return end
+	EMVU:MakeEMV(ent, raw.EMV)
 end
 
 function EMVU.FetchExpressVehicles()
