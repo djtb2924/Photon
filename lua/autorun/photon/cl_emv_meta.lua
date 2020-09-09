@@ -121,20 +121,20 @@ function EMVU:MakeEMV( emv, name )
 
 	function emv:Photon_IllumLights()
 		if not IsValid( self ) then return {} end
-		// local renderIllum = EMVHelper:GetIllumSequence( self.VehicleName, self:Photon_IllumOption(), self )
+		// local renderIllum = EMVHelper:GetIllumSequence( self.Name, self:Photon_IllumOption(), self )
 		// local resultTable = {}
 		// for key,value in pairs( renderIllum ) do
 		// 	if isstring( key ) then
-		// 		local subTable = EMVU.Patterns[ self.VehicleName ]
+		// 		local subTable = EMVU.Patterns[ self.Name ]
 		// 	end
 		// end
-		local result = EMVHelper:GetIllumSequence( self.VehicleName, self:Photon_IllumOption(), self )
+		local result = EMVHelper:GetIllumSequence( self.Name, self:Photon_IllumOption(), self )
 		return result
 	end
 
 	function emv:Photon_HasIllum()
 		if not IsValid( self ) then return 1 end
-		if self.ELSIllum == nil then self.ELSIllum = EMVHelper:HasLamps( self.VehicleName ) end
+		if self.ELSIllum == nil then self.ELSIllum = EMVHelper:HasLamps( self.Name ) end
 		return self.ELSIllum
 	end
 
@@ -153,7 +153,7 @@ function EMVU:MakeEMV( emv, name )
 	end
 
 	function emv:Photon_HasTrafficAdvisor()
-		if self.ELSTraffic == nil then self.ELSTraffic = EMVHelper:HasTrafficAdvisor( self.VehicleName ) end
+		if self.ELSTraffic == nil then self.ELSTraffic = EMVHelper:HasTrafficAdvisor( self.Name ) end
 		return self.ELSTraffic
 	end
 
@@ -171,7 +171,7 @@ function EMVU:MakeEMV( emv, name )
 
 	function emv:Photon_GetELPositions()
 		if not IsValid( self ) then return false end
-		return EMVHelper:GetVectors( self.VehicleName )
+		return EMVHelper:GetVectors( self.Name )
 	end
 
 	function emv:Photon_GetELUsedLights()
@@ -186,22 +186,22 @@ function EMVU:MakeEMV( emv, name )
 
 	function emv:Photon_GetELPattern( option, frame )
 		if not IsValid( self ) then return false end
-		return EMVHelper:GetPattern( self.VehicleName, option, frame )
+		return EMVHelper:GetPattern( self.Name, option, frame )
 	end
 
 	function emv:Photon_GetELSequence()
 		if not IsValid( self ) then return false end
 		local result
 		if self:Photon_AlertMode() then
-			result = EMVHelper.GetAlertSequence( self.VehicleName, self )
+			result = EMVHelper.GetAlertSequence( self.Name, self )
 		else
 			local option = self:Photon_LightOption()
 			if not option then option = 1 end
-			result = EMVHelper:GetSequence( self.VehicleName, option, self )
+			result = EMVHelper:GetSequence( self.Name, option, self )
 		end
-		if self.Photon_IsBraking and self:Photon_IsBraking() then result = EMVHelper.GetBrakeSequence( self.VehicleName, self, result ) end
-		if self.Photon_IsReversing and self:Photon_IsReversing() then result = EMVHelper.GetReverseSequence( self.VehicleName, self, result ) end
-		if self.Photon_ParkMode and self:Photon_ParkMode() then result = EMVHelper.GetParkSequence(self.VehicleName, self, result) end
+		if self.Photon_IsBraking and self:Photon_IsBraking() then result = EMVHelper.GetBrakeSequence( self.Name, self, result ) end
+		if self.Photon_IsReversing and self:Photon_IsReversing() then result = EMVHelper.GetReverseSequence( self.Name, self, result ) end
+		if self.Photon_ParkMode and self:Photon_ParkMode() then result = EMVHelper.GetParkSequence(self.Name, self, result) end
 		return result
 	end
 
@@ -209,26 +209,26 @@ function EMVU:MakeEMV( emv, name )
 		if not IsValid( self ) then return false end
 		local option = self:Photon_TrafficAdvisorOption()
 		if not option then option = 1 end
-		local result = EMVHelper:GetTASequence( self.VehicleName, option, self )
+		local result = EMVHelper:GetTASequence( self.Name, option, self )
 		return result
 	end
 
 	function emv:Photon_ELS_GetPatterns()
 		if not IsValid( self ) then return false end
-		return EMVHelper:GetPatterns( self.VehicleName )
+		return EMVHelper:GetPatterns( self.Name )
 	end
 
 	function emv:Photon_ELS_GetSequenceName()
 		if not IsValid( self ) then return false end
 		local option = self:Photon_LightOption()
 		if not option then option = 1 end
-		local result =  EMVHelper:GetSequenceName( self.VehicleName, option )
+		local result =  EMVHelper:GetSequenceName( self.Name, option )
 		return result
 	end
 
 	function emv:Photon_GetELMeta()
 		if not IsValid( self ) then return false end
-		return EMVHelper:GetMeta( self.VehicleName )
+		return EMVHelper:GetMeta( self.Name )
 	end
 
 	function emv:Photon_SetupVisHandles()
@@ -281,11 +281,11 @@ function EMVU:MakeEMV( emv, name )
 		local k = component
 		local a = index
 
-		if not self.EL.Frames[k] then print("[Photon] Unregistered component name: " .. tostring( component ) .. " defined in vehicle: " .. tostring( self.VehicleName ) ) return end
+		if not self.EL.Frames[k] then print("[Photon] Unregistered component name: " .. tostring( component ) .. " defined in vehicle: " .. tostring( self.Name ) ) return end
 		if not self.EL.Frames[k][a] then
 			local comp = tostring( component )
 			if not printedErrors[comp] then
-				local errorOutput = print("[Photon] Unregistered pattern: " .. tostring( index ) .. " under component: " .. component .. " defined in vehicle: " .. tostring( self.VehicleName ) )
+				local errorOutput = print("[Photon] Unregistered pattern: " .. tostring( index ) .. " under component: " .. component .. " defined in vehicle: " .. tostring( self.Name ) )
 				printedErrors[comp] = true
 			end
 			return
@@ -301,28 +301,28 @@ function EMVU:MakeEMV( emv, name )
 
 		local frame = self.EL.Frames[k][a][1]
 
-		return EMVHelper:Photon_GetFrame( self.VehicleName, component, index, frame )
+		return EMVHelper:Photon_GetFrame( self.Name, component, index, frame )
 
 	end
 
 	function emv:Photon_GetLightSection( component, frame, skip )
-		return EMVHelper:Photon_GetLightSection( self.VehicleName, component, frame, skip )
+		return EMVHelper:Photon_GetLightSection( self.Name, component, frame, skip )
 	end
 
 	function emv:Photon_GetELOverride()
-		return EMVHelper:GetModeDisconnect( self.VehicleName, self:Photon_LightOption() )
+		return EMVHelper:GetModeDisconnect( self.Name, self:Photon_LightOption() )
 	end
 
 	function emv:AlertPhotonMissingRequirements( modelName )
 		if self.PhotonAlertedMissingRequirements then return end
 		if not LocalPlayer():IsAdmin() then return end
-		chat.AddText( Color( 255, 128, 0 ), "[Photon] You may be missing one or more required addons for the \"" .. tostring(self.VehicleName) .. "\" (" .. tostring( modelName ) .. ") and some models will not be loaded.\n", Color(255,255,255), "Please check the Workshop page for this vehicle to see the requirements." )
+		chat.AddText( Color( 255, 128, 0 ), "[Photon] You may be missing one or more required addons for the \"" .. tostring(self.Name) .. "\" (" .. tostring( modelName ) .. ") and some models will not be loaded.\n", Color(255,255,255), "Please check the Workshop page for this vehicle to see the requirements." )
 		self.PhotonAlertedMissingRequirements = true
 	end
 
 	function emv:Photon_UpdateFrameLightPositions()
 		local lights = self:Photon_GetELUsedLights()
-		local posData = EMVU.Positions[ self.VehicleName ]
+		local posData = EMVU.Positions[ self.Name ]
 		local resultTable = {}
 		for key,_ in pairs( lights ) do
 			if PHOTON_DEBUG and not istable( posData[tonumber(key)] ) then continue end
@@ -377,7 +377,7 @@ function EMVU:MakeEMV( emv, name )
 			if self.Photon_ReconnectLights then
 				self:Photon_ReconnectLights()
 			elseif not self.RenderELPrimaryError then
-				--error("[Photon] Catastrophic error occurred on clientside vehicle setup (" .. tostring(self.VehicleName) .. ")." )
+				--error("[Photon] Catastrophic error occurred on clientside vehicle setup (" .. tostring(self.Name) .. ")." )
 				self.RenderELPrimaryError = true
 			end
 			return
@@ -410,7 +410,7 @@ function EMVU:MakeEMV( emv, name )
 
 		if PHOTON_DEBUG then
 			RenderTable = {}
-			local count = #EMVU.Positions[ self.VehicleName ]
+			local count = #EMVU.Positions[ self.Name ]
 			for i = 1, count, 1 do
 				table.insert( RenderTable, { i, "BLUE" } )
 			end
@@ -551,7 +551,7 @@ function EMVU:MakeEMV( emv, name )
 						if frame then table.Add( RenderTable, self:Photon_GetLightSection( index, frame ) ) end
 					end
 
-					local disconnectTable = EMVU.Helper:GetTrafficELDisconnect( self.VehicleName, self:Photon_TrafficAdvisorOption() )
+					local disconnectTable = EMVU.Helper:GetTrafficELDisconnect( self.Name, self:Photon_TrafficAdvisorOption() )
 					if istable( disconnectTable ) then
 						for i=1, #disconnectTable do
 							skipELIndexes[ disconnectTable[ i ] ] = true
@@ -594,7 +594,7 @@ function EMVU:MakeEMV( emv, name )
 	function emv:Photon_SetupEMVProps()
 		if not IsValid( self ) then return false end
 		local emv = self
-		local emvProps = EMVHelper:GetProps( self.VehicleName, self )
+		local emvProps = EMVHelper:GetProps( self.Name, self )
 		if emvProps then
 
 		emv.EMVProps = {}
@@ -717,7 +717,7 @@ function EMVU:MakeEMV( emv, name )
 		if ( self.LastEMVPropScan and self.LastEMVPropScan + .5 > CurTime() and not PHOTON_DEBUG and not PHOTON_EXPRESS ) then return end
 
 		if not self.EMVProps then return end
-		local emvProps = EMVHelper:GetProps( self.VehicleName, self )
+		local emvProps = EMVHelper:GetProps( self.Name, self )
 
 		if emvProps and istable( emvProps) then
 			for index,prop in ipairs( self.EMVProps ) do
@@ -761,7 +761,7 @@ function EMVU:MakeEMV( emv, name )
 
 	-- For updating the props after saving the file
 	function emv:Photon_UpdateEMVProps()
-		local emvProps = EMVHelper:GetProps( self.VehicleName, self )
+		local emvProps = EMVHelper:GetProps( self.Name, self )
 		if not emvProps or not istable( emvProps) then return end
 
 		for index,prop in ipairs( self.EMVProps ) do
