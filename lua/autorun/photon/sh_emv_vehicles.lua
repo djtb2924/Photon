@@ -146,11 +146,14 @@ function EMVU:LoadVehicles()
 			if istable(v.EMV) then
 				EMVU:PreloadVehicle(k, v)
 			end
-		elseif EMVU:CheckForELS( v.Model ) then
-			v.IsEMV = true
-			v.EMV = EMVU:CheckForELS( v.Model )
-			list.Set( "Vehicles", k, v )
-			EMVU:PreloadVehicle(k, v)
+		else
+			local backup = EMVU:CheckForELS(v.Model)
+			if backup then
+				v.IsEMV = true
+				v.EMV = backup
+				list.Set("Vehicles", k, v)
+				EMVU:PreloadVehicle(k, v)
+			end
 		end
 	end
 end
