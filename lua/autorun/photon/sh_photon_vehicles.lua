@@ -32,6 +32,9 @@ function Photon:EntityCreated( ent )
 		if  ent:IsVehicle() then
 			local timerId = ent:EntIndex() .. "-PHOTON-" .. CurTime()
 			timer.Create( timerId, .01, 10, function()
+				if CLIENT and not ent.Name and ent:EMVName() and ent:EMVName() ~= "" then
+					ent.Name = ent:EMVName()
+				end
 				if ent.VehicleTable and istable(ent.VehicleTable) then
 					Photon:SpawnedVehicle( ent )
 					EMVU:SpawnedVehicle( ent )
@@ -55,6 +58,7 @@ function Photon:EntityCreated( ent )
 end
 
 hook.Add("OnEntityCreated", "Photon.EntityCreated", function(e)
+	print("entity created")
 	Photon:EntityCreated( e )
 end)
 
