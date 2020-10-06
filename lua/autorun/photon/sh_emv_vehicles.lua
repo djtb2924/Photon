@@ -54,6 +54,7 @@ function EMVU:SpawnedVehicle( ent )
 	-- Shit breaking is your fault.
 	local name = ent:GetVehicleClass()
 	local vehicles = list.Get("Vehicles")
+	print("init", name)
 
 	if not name or not vehicles[name] then
 		-- The vehicle class isn't listed in the vehicles table.
@@ -61,6 +62,7 @@ function EMVU:SpawnedVehicle( ent )
 		-- VehicleName is set in sandbox, but has no function, so it might be overwritten.
 		-- We'll try it.
 		name = ent.VehicleName
+		print("failed 1", name)
 	end
 
 	local found = true
@@ -73,6 +75,7 @@ function EMVU:SpawnedVehicle( ent )
 		-- SAD.
 		name = ent.VehicleTable.Name
 		found = false
+		print("failed 2", name)
 
 		for id, car in pairs(vehicles) do
 			if car.Name == name then
@@ -81,6 +84,8 @@ function EMVU:SpawnedVehicle( ent )
 				break
 			end
 		end
+
+		print("failed 2 end", name, found)
 	end
 
 	if not found or not name and not vehicles[name] then
